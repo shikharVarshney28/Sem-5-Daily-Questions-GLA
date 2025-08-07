@@ -1,0 +1,45 @@
+// Last updated: 8/7/2025, 2:55:07 PM
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    HashMap<Integer, Integer> hmap;
+
+    void find(TreeNode root) {
+        if (root == null)
+            return;
+        hmap.put(root.val, hmap.getOrDefault(root.val, 0) + 1);
+        find(root.left);
+        find(root.right);
+    }
+
+    public int[] findMode(TreeNode root) {
+        hmap = new HashMap<>();
+        find(root);
+        int freq = 0, maxFreq = 0, idx = 0;
+        for (int i : hmap.keySet()) {
+            if (maxFreq < hmap.get(i)) {
+                freq = 1;
+                maxFreq = hmap.get(i);
+            } else if (maxFreq == hmap.get(i)) freq++;
+        }
+        int ans[] = new int[freq];
+        for (int i : hmap.keySet()) {
+            if (hmap.get(i) == maxFreq)
+                ans[idx++] = i;
+        }
+        return ans;
+    }
+}
