@@ -1,0 +1,38 @@
+// Last updated: 8/7/2025, 2:46:31 PM
+class Solution {
+    public long minCost(int[] basket1, int[] basket2) {
+        HashMap<Integer, Integer> hmap = new HashMap<>();
+        for (int i : basket1)
+            hmap.put(i, hmap.getOrDefault(i, 0) + 1);
+        for (int i : basket2)
+            hmap.put(i, hmap.getOrDefault(i, 0) - 1);
+
+        List<Integer> excessA = new ArrayList<>();
+        List<Integer> excessB = new ArrayList<>();
+        int minFruit = Integer.MAX_VALUE;
+        //Get the list of excess Fruit in each backet by diving the freq by 2 and then add it in resp excessBaket that number of time...
+        for (int i : hmap.keySet()) {
+            if (hmap.get(i) % 2 != 0)
+                return -1; //odd freq
+            if (hmap.get(i) > 0) {
+                for (int c = 1; c <= (hmap.get(i)) / 2; c++)
+                    excessA.add(i);
+            } else {
+                for (int c = 1; c <= Math.abs(hmap.get(i)) / 2; c++)
+                    excessB.add(i);
+            }
+            minFruit = Math.min(minFruit, i);
+        }
+        long cost = 0;
+
+        Collections.sort(excessA); // asc
+        Collections.sort(excessB, Collections.reverseOrder()); //desc => min
+        //This will make sure that teh comparions must be (min,max)
+
+        //Now the cost: Either swapping the resp will be max  will be min or swap the minFruit with one fruit then with other of the resp places....
+        for (int i = 0; i < excessA.size(); i++) {
+            cost += Math.min(Math.min(excessA.get(i), excessB.get(i)), 2 * minFruit); ///Either the swapping is min or the cost...2*minFruit will inc swaps but might dec the cost
+        }
+        return cost;
+    }
+}
